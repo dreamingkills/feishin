@@ -22,7 +22,7 @@ const _Badge = ({ children, ...props }: BadgeProps) => {
             radius="md"
             size="sm"
             styles={{
-                root: { background: 'var(--badge-bg)' },
+                root: { background: 'var(--badge-bg)', paddingTop: '2px' },
             }}
             {...props}
         >
