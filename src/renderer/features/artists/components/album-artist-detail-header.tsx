@@ -1,10 +1,10 @@
 import { forwardRef, Fragment, Ref } from 'react';
-import { Group, Rating, Stack } from '@mantine/core';
+import { Group, Stack } from '@mantine/core';
 import { useParams } from 'react-router';
-import { LibraryItem, ServerType } from '/@/renderer/api/types';
+import { LibraryItem } from '/@/renderer/api/types';
 import { Text } from '/@/renderer/components';
 import { useAlbumArtistDetail } from '/@/renderer/features/artists/queries/album-artist-detail-query';
-import { LibraryHeader, useSetRating } from '/@/renderer/features/shared';
+import { LibraryHeader } from '/@/renderer/features/shared';
 import { AppRoute } from '/@/renderer/router/routes';
 import { formatDurationString } from '/@/renderer/utils';
 import { useCurrentServer } from '../../../store/auth.store';
@@ -41,22 +41,6 @@ export const AlbumArtistDetailHeader = forwardRef(
             },
         ];
 
-        const updateRatingMutation = useSetRating({});
-
-        const handleUpdateRating = (rating: number) => {
-            if (!detailQuery?.data) return;
-
-            updateRatingMutation.mutate({
-                query: {
-                    item: [detailQuery.data],
-                    rating,
-                },
-                serverId: detailQuery?.data.serverId,
-            });
-        };
-
-        const showRating = detailQuery?.data?.serverType === ServerType.NAVIDROME;
-
         return (
             <LibraryHeader
                 ref={ref}
@@ -75,18 +59,6 @@ export const AlbumArtistDetailHeader = forwardRef(
                                     <Text $secondary={item.secondary}>{item.value}</Text>
                                 </Fragment>
                             ))}
-                        {showRating && (
-                            <>
-                                <Text $noSelect>•</Text>
-                                <Rating
-                                    readOnly={
-                                        detailQuery?.isFetching || updateRatingMutation.isLoading
-                                    }
-                                    value={detailQuery?.data?.userRating || 0}
-                                    onChange={handleUpdateRating}
-                                />
-                            </>
-                        )}
                     </Group>
                 </Stack>
             </LibraryHeader>
