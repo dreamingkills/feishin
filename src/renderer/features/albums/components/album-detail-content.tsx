@@ -118,10 +118,13 @@ export const AlbumDetailContent = ({ tableRef, background }: AlbumDetailContentP
                 .filter(Boolean)
                 .join(': ');
 
-            rowData.push({
-                id: `disc-${discNumber}`,
-                name: discName,
-            });
+            if (uniqueDiscNumbers.size > 1) {
+                rowData.push({
+                    id: `disc-${discNumber}`,
+                    name: discName,
+                });
+            }
+
             rowData.push(...songsByDiscNumber);
         }
 
@@ -363,6 +366,44 @@ export const AlbumDetailContent = ({ tableRef, background }: AlbumDetailContentP
                             >
                                 <RiMoreFill size={20} />
                             </Button>
+                            {externalLinks ? (
+                                <>
+                                    <Button
+                                        compact
+                                        component="a"
+                                        href={`https://www.last.fm/music/${encodeURIComponent(
+                                            detailQuery?.data?.albumArtist || '',
+                                        )}/${encodeURIComponent(detailQuery.data?.name || '')}`}
+                                        radius="md"
+                                        rel="noopener noreferrer"
+                                        size="md"
+                                        target="_blank"
+                                        tooltip={{
+                                            label: t('action.openIn.lastfm'),
+                                        }}
+                                        variant="subtle"
+                                    >
+                                        <FaLastfmSquare size={25} />
+                                    </Button>
+                                    {mbzId ? (
+                                        <Button
+                                            compact
+                                            component="a"
+                                            href={`https://musicbrainz.org/release/${mbzId}`}
+                                            radius="md"
+                                            rel="noopener noreferrer"
+                                            size="md"
+                                            target="_blank"
+                                            tooltip={{
+                                                label: t('action.openIn.musicbrainz'),
+                                            }}
+                                            variant="subtle"
+                                        >
+                                            <SiMusicbrainz size={25} />
+                                        </Button>
+                                    ) : null}
+                                </>
+                            ) : null}
                         </Group>
 
                         <Popover position="bottom-end">
@@ -402,46 +443,7 @@ export const AlbumDetailContent = ({ tableRef, background }: AlbumDetailContentP
                         </Group>
                     </Box>
                 )}
-                {externalLinks ? (
-                    <Box component="section">
-                        <Group spacing="sm">
-                            <Button
-                                compact
-                                component="a"
-                                href={`https://www.last.fm/music/${encodeURIComponent(
-                                    detailQuery?.data?.albumArtist || '',
-                                )}/${encodeURIComponent(detailQuery.data?.name || '')}`}
-                                radius="md"
-                                rel="noopener noreferrer"
-                                size="md"
-                                target="_blank"
-                                tooltip={{
-                                    label: t('action.openIn.lastfm'),
-                                }}
-                                variant="subtle"
-                            >
-                                <FaLastfmSquare size={25} />
-                            </Button>
-                            {mbzId ? (
-                                <Button
-                                    compact
-                                    component="a"
-                                    href={`https://musicbrainz.org/release/${mbzId}`}
-                                    radius="md"
-                                    rel="noopener noreferrer"
-                                    size="md"
-                                    target="_blank"
-                                    tooltip={{
-                                        label: t('action.openIn.musicbrainz'),
-                                    }}
-                                    variant="subtle"
-                                >
-                                    <SiMusicbrainz size={25} />
-                                </Button>
-                            ) : null}
-                        </Group>
-                    </Box>
-                ) : null}
+
                 {comment && (
                     <Box component="section">
                         <Spoiler maxHeight={75}>{replaceURLWithHTMLLinks(comment)}</Spoiler>
