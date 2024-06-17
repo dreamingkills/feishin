@@ -321,9 +321,10 @@ export const FullScreenPlayerImage = () => {
                     position="center"
                 >
                     {currentSong?.container && (
-                        <Badge size="lg">
-                            {currentSong?.container} {currentSong?.bitRate}
-                        </Badge>
+                        <>
+                            <Badge size="lg">{currentSong?.container}</Badge>
+                            <Badge size="lg">{currentSong?.bitRate}kbps</Badge>
+                        </>
                     )}
                     {currentSong?.releaseYear && (
                         <Badge size="lg">{currentSong?.releaseYear}</Badge>
