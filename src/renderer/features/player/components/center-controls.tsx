@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { useHotkeys } from '@mantine/hooks';
-import { useQueryClient } from '@tanstack/react-query';
 import formatDuration from 'format-duration';
 import isElectron from 'is-electron';
 import { useTranslation } from 'react-i18next';
@@ -14,9 +13,7 @@ import {
     RiSkipBackFill,
     RiSkipForwardFill,
     RiSpeedFill,
-    RiStopFill,
 } from 'react-icons/ri';
-import { BsDice3 } from 'react-icons/bs';
 import styled from 'styled-components';
 import { Text } from '/@/renderer/components';
 import { useCenterControls } from '../hooks/use-center-controls';
@@ -37,8 +34,6 @@ import {
 } from '/@/renderer/store/settings.store';
 import { PlayerStatus, PlaybackType, PlayerShuffle, PlayerRepeat } from '/@/renderer/types';
 import { PlayerbarSlider } from '/@/renderer/features/player/components/playerbar-slider';
-import { openShuffleAllModal } from './shuffle-all-modal';
-import { usePlayQueueAdd } from '/@/renderer/features/player/hooks/use-playqueue-add';
 
 interface CenterControlsProps {
     playersRef: any;
@@ -94,7 +89,6 @@ const ControlsContainer = styled.div`
 
 export const CenterControls = ({ playersRef }: CenterControlsProps) => {
     const { t } = useTranslation();
-    const queryClient = useQueryClient();
     const [isSeeking, setIsSeeking] = useState(false);
     const currentSong = useCurrentSong();
     const skip = useSettingsStore((state) => state.general.skipButtons);
@@ -122,7 +116,6 @@ export const CenterControls = ({ playersRef }: CenterControlsProps) => {
         handlePause,
         handlePlay,
     } = useCenterControls({ playersRef });
-    const handlePlayQueueAdd = usePlayQueueAdd();
 
     const songDuration = currentSong?.duration ? currentSong.duration / 1000 : 0;
     const currentTime = useCurrentTime();
@@ -171,14 +164,6 @@ export const CenterControls = ({ playersRef }: CenterControlsProps) => {
         <>
             <ControlsContainer>
                 <ButtonsContainer>
-                    <PlayerButton
-                        icon={<RiStopFill size={buttonSize} />}
-                        tooltip={{
-                            label: t('player.stop', { postProcess: 'sentenceCase' }),
-                        }}
-                        variant="tertiary"
-                        onClick={handleStop}
-                    />
                     <PlayerButton
                         $isActive={shuffle !== PlayerShuffle.NONE}
                         icon={<RiShuffleFill size={buttonSize} />}
@@ -283,20 +268,6 @@ export const CenterControls = ({ playersRef }: CenterControlsProps) => {
                         }}
                         variant="tertiary"
                         onClick={handleToggleRepeat}
-                    />
-
-                    <PlayerButton
-                        icon={<BsDice3 size={buttonSize} />}
-                        tooltip={{
-                            label: t('player.playRandom', { postProcess: 'sentenceCase' }),
-                        }}
-                        variant="tertiary"
-                        onClick={() =>
-                            openShuffleAllModal({
-                                handlePlayQueueAdd,
-                                queryClient,
-                            })
-                        }
                     />
                 </ButtonsContainer>
             </ControlsContainer>
